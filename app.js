@@ -7,6 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var fs = require('fs');
 
 var config = require('./config');
 
@@ -15,9 +16,12 @@ var config = require('./config');
 // mongoose.connect(config.mongo.uri, config.mongo.options);
 // mongoose.Promise = global.Promise;
 require('./mongodb/db');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var modelsPath = path.join(__dirname, 'models');
+fs.readdirSync(modelsPath).forEach(function (file) {
+	if (/(.*)\.(js$|coffee$)/.test(file)) {
+		require(modelsPath + '/' + file);
+	}
+});
 
 var app = express();
 
@@ -31,9 +35,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
+// 加载路由
+require('./routes')(app);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
