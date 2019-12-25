@@ -6,7 +6,9 @@ var router = express.Router();
 //   res.send('respond with a resource');
 // });
 import User from '../controller/user/user.controller'
-
+// 用户注册
 router.post('/register', User.userRegister);
+
+router.get('/getCaptcha', User.getCaptcha);
 
 module.exports = router;
