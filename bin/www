@@ -4,6 +4,11 @@
  * Module dependencies.
  */
 
+// 解决expess对es6 import/export的语法支持
+require('babel-register')({
+  presets: ['env']
+});
+
 var app = require('../app');
 var debug = require('debug')('node-blog:server');
 var http = require('http');

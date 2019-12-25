@@ -1,8 +1,20 @@
+'use strict';
+// 设置默认环境变量
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
+
+var config = require('./config');
+
+// 设置连接数据库
+// 连接数据库.
+// mongoose.connect(config.mongo.uri, config.mongo.options);
+// mongoose.Promise = global.Promise;
+require('./mongodb/db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
