@@ -6,16 +6,22 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
+var bcrypt = require('bcrypt-nodejs');
 
 
 var UserSchema = new Schema({
 	username:{
-		type:String,
-  },
+		type:String
+	},
+	password: {
+		type: String,
+		required: true
+	},
 	nickname:String,
 	email: {
 		type: String,
-		lowercase: true
+		lowercase: true,
+		required: true
 	},
 	provider: {
 		type:String,
@@ -67,16 +73,16 @@ var UserSchema = new Schema({
 /**
  * Virtuals
  */
-UserSchema
-  .virtual('password')
-  .set(function(password) {
-    this._password = password;
-    this.salt = this.makeSalt();
-    this.hashedPassword = this.encryptPassword(password);
-  })
-  .get(function() {
-    return this._password;
-  });
+// UserSchema
+//   .virtual('password')
+//   .set(function(password) {
+//     this._password = password;
+//     this.salt = this.makeSalt();
+//     this.hashedPassword = this.encryptPassword(password);
+//   })
+//   .get(function() {
+//     return this._password;
+//   });
 
 
 UserSchema
@@ -134,19 +140,21 @@ UserSchema.methods = {
 		var selfRoles = this.role;
 		return (selfRoles.indexOf('admin') !== -1 || selfRoles.indexOf(role) !== -1);
 	},
-	//验证用户密码
+	//验证用户密码(第三方)
 	authenticate: function(plainText) {
 	  return this.encryptPassword(plainText) === this.hashedPassword;
+	},
+	// 验证用户密码
+	validPassword:function(password) {
+		return bcrypt.compareSync(password,this.password);
 	},
 	//生成盐
 	makeSalt: function() {
 	  return crypto.randomBytes(16).toString('base64');
 	},
-	//生成密码
+	//生成密码，密码加密
 	encryptPassword: function(password) {
-	  if (!password || !this.salt) return '';
-	  var salt = new Buffer(this.salt, 'base64');
-	  return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
+	  return bcrypt.hashSync(password,bcrypt.genSaltSync(5),null);
 	}
 }
 

@@ -1,11 +1,11 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var passport = require('passport');
-var config = require('../config/env');
+// var passport = require('passport');
+var config = require('../config');
 var jwt = require('jsonwebtoken');
-var expressJwt = require('express-jwt');
-var compose = require('composable-middleware');
+// var expressJwt = require('express-jwt');
+// var compose = require('composable-middleware');
 var User = mongoose.model('User');
 
 /** 
@@ -73,6 +73,6 @@ function signToken(id) {
 }
 
 
-exports.isAuthenticated = isAuthenticated;
-exports.hasRole = hasRole;
+// exports.isAuthenticated = isAuthenticated;
+// exports.hasRole = hasRole;
 exports.signToken = signToken;

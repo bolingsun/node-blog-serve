@@ -9,6 +9,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var session = require('express-session');
+var passport = require('passport');
 var config = require('./config');
 
 // 设置连接数据库
@@ -41,6 +42,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
+
+// 加载passport验证初始化
+app.use(passport.initialize());
 // 加载路由
 require('./routes')(app);
 // catch 404 and forward to error handler

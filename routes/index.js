@@ -12,7 +12,9 @@
 
 // import admin from './admin'
 import users from './users'
+import auth from '../auth'
 
 module.exports = (app) => {
   app.use('/user', users);
+  app.use('/auth', auth);
 }
