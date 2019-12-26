@@ -18,7 +18,7 @@ exports.getCaptcha = function (req, res) {
 		height: 30,
 	});
 	req.session.captcha = cap.text; // session 存储验证码数值
-	console.log(req.session)
+	// console.log(req.session)
 	return res.type('svg').status(200).send(cap.data);
 };
 
