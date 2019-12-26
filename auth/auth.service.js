@@ -10,6 +10,9 @@ var User = mongoose.model('User');
 
 /** 
  * 验证token
+ * credentialsRequired: true | false
+ * true: 对无token请求，抛出异常
+ * false: 对无token请求，不进行解析和抛出异常
  */
 function authToken(credentialsRequired) {
   return compose()
@@ -21,7 +24,7 @@ function authToken(credentialsRequired) {
         })
         .use(expressJwt({ 
           secret: config.session.secrets,
-          credentialsRequired:credentialsRequired //是否抛出错误
+          credentialsRequired:credentialsRequired //是否抛出错误,false 来对无 Token 请求不进行解析和抛出异常
          }))
 }
 /**

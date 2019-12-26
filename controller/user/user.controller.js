@@ -35,7 +35,7 @@ exports.getMe = function (req,res) {
 	});
 }
 
-// 用户注册
+// 普通用户注册
 exports.userRegister = function (req, res) {
 	var username = req.body.username ? req.body.username.replace(/(^\s+)|(\s+$)/g, "") : '';
 	var email = req.body.email ? req.body.email.replace(/(^\s+)|(\s+$)/g, "") : '';
@@ -51,6 +51,8 @@ exports.userRegister = function (req, res) {
 		error_msg = "用户名不合法";
 	} else if (email.length <= 4 || email.length > 30 || !EMAIL_REGEXP.test(email)) {
 		error_msg = "邮箱地址不合法";
+	} else if(req.body.password === ''){
+		error_msg = '密码不能为空'
 	}
 	if (error_msg) {
 		return res.status(200).send({
@@ -59,21 +61,39 @@ exports.userRegister = function (req, res) {
 			message: error_msg
 		});
 	}
-
-	var newUser = new User(req.body);
-	newUser.role = 'user';
-
-	newUser.saveAsync().then(function (user) {
-		// Logs.create({
-		// 	uid:req.user._id,
-		// 	content:"创建新用户 "+ (user.email || user.nickname),
-		// 	type:"user"
-		// });
-		return res.status(200).send({ status: 1, user_id: user._id });
-	}).catch(function (err) {
-		if (err.errors && err.errors.username) {
-			err = { error_msg: err.errors.username.message }
+	User.findOne({email: email}, function(err, data){
+		if(err) {
+			return res.status(500)
 		}
-		return res.status(500).send(err);
-	});
+		if(data) {
+			return res.status(200).send({
+				status: 0,
+				error_msg: '邮箱已注册'
+			})
+		}
+		User.findOne({username: username}, function(err, data) {
+			if(err) {
+				return res.status(500)
+			}
+			if(data) {
+				return res.status(200).send({
+					status: 0,
+					error_msg: '用户名已注册'
+				})
+			}
+			var newUser = new User();
+			newUser.username = req.body.username;
+			newUser.email = req.body.email;
+			newUser.password = newUser.encryptPassword(req.body.password);
+			newUser.role = 'user';
+			newUser.saveAsync().then(function (user) {
+				return res.status(200).send({ status: 1, user_id: user._id, message: '注册成功' });
+			}).catch(function (err) {
+				if (err.errors && err.errors.username) {
+					err = { error_msg: err.errors.username.message }
+				}
+				return res.status(500).send(err);
+			});
+				})
+			})
 }
