@@ -1,11 +1,11 @@
 'use strict';
 
 var mongoose = require('mongoose');
-// var passport = require('passport');
+var passport = require('passport');
 var config = require('../config');
 var jwt = require('jsonwebtoken');
-// var expressJwt = require('express-jwt');
-// var compose = require('composable-middleware');
+var expressJwt = require('express-jwt');
+var compose = require('composable-middleware');
 var User = mongoose.model('User');
 
 /** 
@@ -33,7 +33,12 @@ function isAuthenticated() {
     .use(function (err,req,res,next) {
       //expressJwt 错误处理中间件
       if (err.name === 'UnauthorizedError') {
-        return res.status(401).send();
+        // return res.status(401).send();
+        // token 过期或错误
+        return res.status(401).send({
+          status: 0,
+          error_msg: 'token错误或失效'
+        })
       }
       next();
     })
@@ -69,10 +74,10 @@ function hasRole(roleRequired) {
  * 生成token
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.session.secrets, { expiresIn: '1y' });
+  return jwt.sign({ _id: id }, config.session.secrets, { expiresIn: '2h' });
 }
 
 
-// exports.isAuthenticated = isAuthenticated;
-// exports.hasRole = hasRole;
+exports.isAuthenticated = isAuthenticated;
+exports.hasRole = hasRole;
 exports.signToken = signToken;

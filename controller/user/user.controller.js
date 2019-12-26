@@ -22,6 +22,18 @@ exports.getCaptcha = function (req, res) {
 	return res.type('svg').status(200).send(cap.data);
 };
 
+// 获取用户个人信息
+exports.getMe = function (req,res) {
+	var userId = req.user._id;
+	User.findByIdAsync(userId).then(function (user) {
+		return res.status(200).send({
+			status: 1,
+			data: user.userInfo
+		});
+	}).catch(function (err) {
+		return res.status(401).send();
+	});
+}
 
 // 用户注册
 exports.userRegister = function (req, res) {

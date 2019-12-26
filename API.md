@@ -88,3 +88,35 @@ POST
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }
 ```
+
+### 3、用户登录后获取个人信息
+
+#### 请求URL:  
+```
+/user/getInfo
+```
+
+#### 请求方式: 
+```
+get
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|token      |Y       |string  | 需要在请求头Authorization赋值 Bearer token值 |
+
+#### 返回示例：
+
+```javascript
+{
+  "status": 1,
+  "data": {
+      "role": "user",
+      "email": "123456@qq.com",
+      "likes": [],
+      "provider": "local"
+  }
+}
+```
