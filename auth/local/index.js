@@ -22,8 +22,13 @@ router.post('/signup',function(req, res, next){
     // }else{
     //   next();
     // }
+    var email = req.body.email?req.body.email.replace(/(^\s+)|(\s+$)/g, ""):'';
+    var EMAIL_REGEXP = /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
     if(!req.body.email || !req.body.password) {
       error_msg = '输入参数错误'
+    }
+    if(email.length <=4 || email.length > 30 || !EMAIL_REGEXP.test(email)){
+      error_msg = "邮箱地址不合法";
     }
     if(req.body.email === '' || req.body.password === ''){
       error_msg = "用户名和密码不能为空.";
