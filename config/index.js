@@ -18,6 +18,8 @@ var all = {
   },
   session:{
     secrets: 'blog-secret',
+    name: 'myblog',
+    cookie:  {maxAge: 60000*5}
   },
   //用户角色种类
   userRoles: ['user', 'admin'],

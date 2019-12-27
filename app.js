@@ -11,6 +11,7 @@ var fs = require('fs');
 var session = require('express-session');
 var passport = require('passport');
 var config = require('./config');
+import connectMongo from 'connect-mongo';
 
 // 设置连接数据库
 // 连接数据库.
@@ -35,12 +36,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const MongoStore = connectMongo(session);
 app.use(session({
-  secret: 'myblog',
-  name: 'name',
-  cookie: { maxAge: 60000 },
+  name: config.session.name,
+  secret: config.session.secrets,
+  cookie: config.session.cookie,
   resave: false,
   saveUninitialized: true,
+  store: new MongoStore({
+    url: config.mongo.uri
+  })
 }));
 
 // 加载passport验证初始化
