@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../auth/auth.service'); // 用户鉴权
+var config = require('../config');
 
 var path = require('path');
 var multer  = require('multer')
@@ -18,7 +19,7 @@ var upload = multer({ storage: storage});
 
 // 上传单张图片
 router.post('/',upload.single('file'),function (req, res, next) {
-  var url = '/uploads/' + req.file.filename
+  var url = config.bashUrl + '/uploads/' + req.file.filename
   return res.status(200).send({
     status: 1,
     data: url

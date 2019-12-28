@@ -5,6 +5,7 @@ var _ = require('lodash');
 var fs = require('fs');
 
 var all = {
+  bashUrl:"http://127.0.0.1:3000",
   env: process.env.NODE_ENV,
   port: process.env.PORT || 9000,
   //mongodb配置
