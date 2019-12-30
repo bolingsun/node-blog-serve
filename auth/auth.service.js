@@ -17,8 +17,9 @@ var User = mongoose.model('User');
 function authToken(credentialsRequired) {
   return compose()
         .use(function(req, res, next) {
-          if(req.query && req.query.access_token) {
-            req.headers.authorization = 'Bearer ' + req.query.access_token;
+          let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-token'];
+          if(token) {
+            req.headers.authorization = 'Bearer ' + token;
           }
           next();
         })
@@ -68,7 +69,12 @@ function hasRole(roleRequired) {
         next();
       }
       else {
-        return res.status(403).send();
+        return res.status(403).send(
+          {
+            status: 0,
+            error_msg: "暂无权限"
+          }
+        );
       }
     });
 }

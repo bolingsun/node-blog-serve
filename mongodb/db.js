@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import chalk from 'chalk';
 var config = require('../config');
+mongoose.set('useCreateIndex', true)
 mongoose.connect(config.mongo.uri, config.mongo.options);
 mongoose.Promise = global.Promise;
 
