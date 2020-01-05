@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
-	aid:{
+	article_id:{
 		type: Schema.Types.ObjectId,
 		ref: 'Article'
 	},

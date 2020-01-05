@@ -60,7 +60,7 @@ POST
 }
 ```
 
-### 3、系统用户登录
+### 3、系统用户登录(普通用户也可使用该接口登录))
 
 #### 请求URL:  
 ```
@@ -405,5 +405,223 @@ POST
     "success": true,
     "message": "更新成功",
     "article_id": "5e114d4dc1e2084494859020"
+}
+```
+
+### 评论新增
+
+#### 请求URL:  
+```
+/comment/addComment
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|articleId      |Y       |string | 文章id|
+|content      |Y       |string | 评论内容|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "data": {
+        "status": 1,
+        "_id": "5e11854081e948504cc60ab8",
+        "article_id": "5e114d4dc1e2084494859020",
+        "content": "我是new comment内容",
+        "user_id": {
+            "_id": "5e048000663b2b350cd859ea"
+        },
+        "replys": [],
+        "created": "2020-01-05T06:42:08.411Z",
+        "updated": "2020-01-05T06:42:08.411Z",
+        "__v": 0
+    }
+}
+```
+
+### 评论列表
+
+#### 请求URL:  
+```
+/comment/commentList?id=5e114d4dc1e2084494859020
+```
+
+#### 请求方式: 
+```
+GET
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 文章id|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": [
+        {
+            "status": 1,
+            "_id": "5e11854081e948504cc60ab8",
+            "article_id": "5e114d4dc1e2084494859020",
+            "content": "我是new comment内容",
+            "user_id": {
+                "_id": "5e048000663b2b350cd859ea",
+                "username": "user2",
+                "avatar": "xxx.jpg",
+            },
+            "replys": [
+                {
+                    "_id": "5e1190325286b03be84765df",
+                    "content": "你这个评论批量",
+                    "user_info": {
+                        "id": "5e047f0ce862981008597673",
+                        "username": "user2"
+                    },
+                    "created": "2020-01-05T07:28:50.515Z"
+                }
+            ],
+            "created": "2020-01-05T06:42:08.411Z",
+            "updated": "2020-01-05T06:42:08.411Z",
+            "__v": 0
+        }
+    ]
+}
+```
+### 评论回复
+
+#### 请求URL:  
+```
+/comment/addReply
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 评论父id|
+|content      |Y       |string | 评论回复内容|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "message": "回复成功",
+    "data": [
+        {
+            "_id": "5e1190325286b03be84765df",
+            "content": "你这个评论批量",
+            "user_info": {
+                "id": "5e047f0ce862981008597673",
+                "username": "user2"
+            },
+            "created": "2020-01-05T07:28:50.515Z"
+        },
+        {
+            "_id": "5e119083bce6b62ed443475a",
+            "content": "你这个评论good",
+            "user_info": {
+                "id": "5e047f0ce862981008597673",
+                "username": "user2"
+            },
+            "created": "2020-01-05T07:30:11.737Z"
+        }
+    ]
+}
+```
+### 删除评论回复内容（admin）
+
+#### 请求URL:  
+```
+/comment/deleteReply
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|commentId      |Y       |string | 评论id|
+|replyId      |Y       |string | 回复内容ID|
+
+#### 返回示例：
+
+```javascript
+{
+     "status": 1,
+    "success": true,
+    "message": "删除回复成功",
+    "data": {
+        "status": 1,
+        "_id": "5e11894781e948504cc60aba",
+        "article_id": "5e114d4dc1e2084494859020",
+        "content": "我是new comment内容2 admin",
+        "user_id": "5e048000663b2b350cd859ea",
+        "replys": [
+            {
+                "_id": "5e119083bce6b62ed443475a",
+                "content": "你这个评论good",
+                "user_info": {
+                    "id": "5e047f0ce862981008597673",
+                    "username": "user2"
+                },
+                "created": "2020-01-05T07:30:11.737Z"
+            }
+        ],
+        "created": "2020-01-05T06:59:19.851Z",
+        "updated": "2020-01-05T06:59:19.851Z",
+        "__v": 0
+    }
+}
+```
+### 删除评论（admin）
+
+#### 请求URL:  
+```
+/comment/deleteComment
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 评论id|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "message": "删除评论成功"
 }
 ```

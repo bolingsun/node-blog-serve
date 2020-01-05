@@ -15,10 +15,12 @@ import users from './users'
 import auth from '../auth'
 import upload from './upload'
 import article from './article'
+import comment from './comment'
 
 module.exports = (app) => {
   app.use('/user', users);
   app.use('/auth', auth);
   app.use('/upload', upload);
   app.use('/article', article);
+  app.use('/comment', comment);
 }

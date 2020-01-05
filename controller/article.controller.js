@@ -102,7 +102,7 @@ exports.updateArticle = function (req,res,next) {
 		return next(err);
 	});
 }
-//后台获取单篇博客详情
+//后台获取单篇博客详情(未)
 exports.getArticle = function (req,res) {
 	var id = req.params.id;
 	Article.findOne({_id:id})
