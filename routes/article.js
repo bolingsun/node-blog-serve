@@ -8,8 +8,18 @@ var config = require('../config');
 import articleController from '../controller/article.controller'
 // 添加文章
 router.post('/addArticle',auth.hasRole('admin'),articleController.addArticle);
+// 后台获取文章列表
+router.get('/adminArticleList',auth.hasRole('admin'),articleController.getArticleList);
+// 后台更新文章
+router.post('/updateArticle',auth.hasRole('admin'),articleController.updateArticle);
 
 // 前台用户获取文章列表
-router.get('/article-list',articleController.getFrontArticleList);
+router.get('/articleList',articleController.getFrontArticleList);
+
+// 前台用户获取文章列表
+router.get('/articleDetial',articleController.getFrontArticle);
+
+// 用户喜欢文章
+router.post('/toggleLike',auth.isAuthenticated(), articleController.toggleLike);
 
 module.exports = router;

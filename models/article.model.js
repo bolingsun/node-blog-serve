@@ -14,7 +14,12 @@ var ArticleSchema = new Schema({
 	title:{
 		type:String,
 		unique: true
-  },
+	},
+	// 简介
+	brief: {
+		type: String,
+		default: ''
+	},
   // 文章封面图片链接地址
   cover_img: {
     type: String,
@@ -69,7 +74,9 @@ ArticleSchema
   .get(function() {
     return {
     	'_id': this._id,
-      'title': this.title,
+			'title': this.title,
+			'brief': this.brief,
+			'cover_img': this.cover_img,
       'content': this.content,
       'images': this.images,
       'visit_count': this.visit_count,

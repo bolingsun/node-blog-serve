@@ -32,14 +32,15 @@ exports.addArticle = function (req,res,next) {
 	return Article.createAsync(req.body).then(function (result) {
 		return res.status(200).send({status: 1,article_id:result._id, message: '新增成功'});
 	}).catch(function (err) {
-	 	return next(err);
+		 // return next(err);
+		 return res.status(200).send({status: 0,error_msg:err.errmsg})
 	});
 }
 //后台获取博客列表
 exports.getArticleList = function (req,res,next) {
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
-	var startRow = (currentPage - 1) * itemsPerPage;
+	var pageSize = (parseInt(req.query.pageSize) > 0)?parseInt(req.query.pageSize):10;
+	var startRow = (currentPage - 1) * pageSize;
 
 	var sortName = String(req.query.sortName) || "publish_time";
 	var sortOrder = req.query.sortOrder;
@@ -47,13 +48,13 @@ exports.getArticleList = function (req,res,next) {
 		sortName = "-" + sortName;
 	}
 
-	Article.find()
+	Article.find({},'-images')
 		.skip(startRow)
-		.limit(itemsPerPage)
+		.limit(pageSize)
 		.sort(sortName)
 		.exec().then(function (ArticleList) {
 			return Article.countAsync().then(function (count) {
-				return res.status(200).json({ data: ArticleList, count:count });
+				return res.status(200).send({status: 1, data: ArticleList, total:count });
 			});
 		}).then(null,function (err) {
 			return next(err);
@@ -73,7 +74,7 @@ exports.destroy = function (req,res,next) {
 }
 //更新博客
 exports.updateArticle = function (req,res,next) {
-	var id = req.params.id;
+	var id = req.body.id;
 	if(req.body._id){
 	  delete req.body._id;
 	}
@@ -86,7 +87,7 @@ exports.updateArticle = function (req,res,next) {
 		error_msg = '内容不能为空.';
 	}
 	if(error_msg){
-		return res.status(422).send({error_msg:error_msg});
+		return res.status(422).send({status: 0, error_msg:error_msg});
 	}
 	//将图片提取存入images,缩略图调用
 	req.body.images = tools.extractImage(content);
@@ -96,12 +97,12 @@ exports.updateArticle = function (req,res,next) {
 	}
 
 	Article.findByIdAndUpdateAsync(id,req.body,{new:true}).then(function(article){
-		return res.status(200).json({success:true,article_id:article._id});
+		return res.status(200).send({status: 1, success:true,message: '更新成功', article_id:article._id});
 	}).catch(function(err){
 		return next(err);
 	});
 }
-//获取单篇博客
+//后台获取单篇博客详情
 exports.getArticle = function (req,res) {
 	var id = req.params.id;
 	Article.findOne({_id:id})
@@ -112,61 +113,7 @@ exports.getArticle = function (req,res) {
 			return res.status(500).send();
 		});
 }
-//上传图片
-exports.uploadImage = function (req,res,next) {
-	var file = req.file;
-	if(!file){
-		return res.status(422).send({error_msg:"缺少文件参数."});
-	}
-	var fileName =  new Date().getTime() + file.originalname;
-	qiniuHelper.upload(file.path,'blog/article/' + fileName).then(function (result) {
-		return res.status(200).json({success:true,img_url:result.url});
-	}).catch(function (err) {
-		return next(err);
-	});
-}
-//将网络图片抓取到七牛
-/**
- * 七牛返回结果
- * $$hashKey: "object:88"
- * hash: "FmUJ7-RWKGMtsX8UTY-_oa5ahsFb"
- * key: "blog/article/1439948192797e48eb2b310f91bda45273dbbfc1a8e6e.png"
- * url: "http://upload.jackhu.top/blog/article/1439948192797e48eb2b310f91bda45273dbbfc1a8e6e.png"
- */
-exports.fetchImage = function (req,res,next) {
-	if(!req.body.url){
-		return res.status(422).send({error_msg:"url地址不能为空."});
-	}
-	var urlLink = URL.parse(req.body.url);
-	var fileName;
-	if(urlLink.pathname.indexOf('/') !== -1){
-		var links = urlLink.pathname.split('/');
-		fileName = links[links.length - 1];
-	}else{
-		fileName = urlLink.pathname;
-	};
-	fileName =  new Date().getTime() + fileName;
-	qiniuHelper.fetch(req.body.url,'blog/article/' + fileName).then(function (result) {
-		return res.status(200).json({success:true,img_url:result.url});
-	}).catch(function (err) {
-		return next(err);
-	});
-}
-//前台获取博客数量
-exports.getFrontArticleCount = function (req,res,next) {
-	var condition = {status:{$gt:0}};
-	if(req.query.tagId){
-		//tagId = new mongoose.Types.ObjectId(tagId);
-		var tagId = String(req.query.tagId);
-		condition = _.defaults(condition,{ tags: { $elemMatch: { $eq:tagId } } });
-	}
-	Article.countAsync(condition).then(function (count) {
-		return res.status(200).json({success:true,count:count});
-	}).catch(function (err) {
-		return next(err);
-	})
-}
-//前台获取博客列表
+//前台获取博客列表(包含博客数量)
 exports.getFrontArticleList =function (req,res,next) {
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
 	var pageSize = (parseInt(req.query.pageSize) > 0)?parseInt(req.query.pageSize):10;
@@ -182,7 +129,7 @@ exports.getFrontArticleList =function (req,res,next) {
 	}
 	Article.count(condition).then((count) => {
 		Article.find(condition)
-		.select('title visit_count comment_count like_count publish_time')
+		.select('title brief cover_img visit_count comment_count like_count publish_time')
 		.skip(startRow)
 		.limit(pageSize)
 		.sort(sort)
@@ -194,19 +141,14 @@ exports.getFrontArticleList =function (req,res,next) {
 	})
 }
 
-//前台获取文章
+//前台获取文章详情
 exports.getFrontArticle = function (req,res,next) {
-	var id = req.params.id;
-	var md = new MarkdownIt({
-		html:true //启用html标记转换
-	});
+	var id = req.query.id;
 	//每次获取之后,将阅读数加1
 	return Article.findByIdAsync(id,'-images').then(function(result) {
-		//将content markdown文档转成HTML
-		result.content = md.render(result.content);
 		result.visit_count++;
 		Article.findByIdAndUpdateAsync(id,{$inc:{visit_count:1}});
-		return res.status(200).json({data:result.info});
+		return res.status(200).send({status: 1, data:result.info});
 	}).catch(function (err) {
 		return next(err);
 	});
@@ -259,40 +201,15 @@ exports.getPrenext = function (req,res,next) {
 	})
 }
 
-//获取首页图片
-exports.getIndexImage = function (req,res,next) {
-	//使用redis缓存图片列表.
-	redis.llen('indexImages').then(function (imagesCount) {
-		if(imagesCount < 1){
-			res.status(200).json({success:true,img:config.defaultIndexImage});
-			if(config.qiniu.app_key !== '' && config.qiniu.app_secret !== ''){
-				return qiniuHelper.list('blog/index','',30).then(function(result){
-					return Promise.map(result.items,function (item) {
-						return redis.lpush('indexImages',config.qiniu.domain + item.key + '-600x1500q80');
-					});
-				});
-			}
-			return;
-		}else{
-			return redis.lrange('indexImages', 0, 30).then(function (images) {
-				var index = _.random(images.length - 1);
-				return res.status(200).json({success:true,img:images[index]});
-			});
-		}
-	}).catch(function (err) {
-		redis.del('indexImages');
-		return next(err);
-	});
-}
 
 //用户喜欢
 exports.toggleLike = function (req,res,next) {
-	var aid = new mongoose.Types.ObjectId(req.params.id);
+	var aid = new mongoose.Types.ObjectId(req.body.id);
   var userId = req.user._id;
   //如果已经喜欢过了,则从喜欢列表里,去掉文章ID,并减少文章喜欢数.否则添加到喜欢列表,并增加文章喜欢数.	
-  //var isLink = _.indexOf(req.user.likeList.toString(), req.params.id);
+	//var isLink = _.indexOf(req.user.likeList.toString(), req.params.id);
   var isLike = _.findIndex(req.user.likeList, function(item) {
-    return item.toString() == req.params.id;
+    return item.toString() == req.body.id;
   });
   var conditionOne,conditionTwo,liked;
   if(isLike !== -1){
@@ -307,7 +224,13 @@ exports.toggleLike = function (req,res,next) {
 
   User.findByIdAndUpdateAsync(userId,conditionOne).then(function (user) {
   	return Article.findByIdAndUpdateAsync(aid,conditionTwo,{new:true}).then(function (article) {
-  		return res.status(200).json({success:true,'count':article.like_count,'isLike':liked});
+  		return res.status(200).send({
+				status: 1, 
+				data: {
+					count: article.like_count,
+					isLike: liked
+				}
+			});
   	});
   }).catch(function (err) {
   	return next(err);

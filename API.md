@@ -178,7 +178,7 @@ POST
 }
 ```
 
-### 7、文章新增
+### 文章新增
 
 #### 请求URL:  
 ```
@@ -196,6 +196,8 @@ POST
 |:-----|:-------:|:-----|:-----|
 |title      |Y       |string | 文章标题|
 |content      |Y       |string | 文章内容|
+|brief      |N      |string | 文章简介|
+|cover_img      |N       |string | 文章封面图片|
 
 #### 返回示例：
 
@@ -207,11 +209,11 @@ POST
 }
 ```
 
-### 8、文章列表查询（前台）
+### 文章列表查询（后台）
 
 #### 请求URL:  
 ```
-/article/addArticle?currentPage=1&pageSize=3
+/article/adminArticleList?currentPage=1&pageSize=3
 ```
 
 #### 请求方式: 
@@ -219,7 +221,53 @@ POST
 GET
 ```
 
-#### 参数类型：params
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|currentPage      |N       |number | 当前页,默认值1|
+|pageSize      |N       |number | 分页大小, 默认值10|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": [
+        {
+            "brief": "",
+            "cover_img": "",
+            "tags": [],
+            "visit_count": 1,
+            "comment_count": 0,
+            "like_count": 1,
+            "top": false,
+            "status": 0,
+            "_id": "5e114b5f86c0bf230cbe16be",
+            "title": "我是测试文章1",
+            "created": "2020-01-05T02:35:11.443Z",
+            "publish_time": "2020-01-05T02:35:11.443Z",
+            "updated": "2020-01-05T02:35:11.443Z",
+            "__v": 0
+        }
+    ],
+    "total": 7
+}
+```
+
+### 文章列表查询（前台）
+
+#### 请求URL:  
+```
+/article/articleList?currentPage=1&pageSize=3
+```
+
+#### 请求方式: 
+```
+GET
+```
+
+#### 参数类型：query
 
 |参数|是否必选|类型|说明|
 |:-----|:-------:|:-----|:-----|
@@ -258,5 +306,104 @@ GET
         }
     ],
     "total": 7
+}
+```
+
+### 获取文章详情（前台）
+
+#### 请求URL:  
+```
+/article/articleDetial?id=123456
+```
+
+#### 请求方式: 
+```
+GET
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |number | 文章查询id|
+
+#### 返回示例：
+
+```javascript
+{
+     "status": 1,
+    "data": {
+        "_id": "5e114d4dc1e2084494859020",
+        "title": "我是测试文章2",
+        "brief": "我是简介描述a",
+        "cover_img": "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        "content" : "文章内容测试",
+        "visit_count": 2,
+        "comment_count": 0,
+        "like_count": 1,
+        "publish_time": "2020-01-05T02:43:25.346Z"
+    }
+}
+```
+
+### 文章喜欢与不喜欢切换（前台，需要登录）
+
+#### 请求URL:  
+```
+/article/toggleLike
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |number | 文章查询id|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": {
+        "count": 2, // 查询文章目前喜欢人数
+        "isLike": true // 该文章目前用户喜欢与否的状态
+    }
+}
+```
+
+### 文章更新（后台）
+
+#### 请求URL:  
+```
+/article/updateArticle
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|title      |Y       |string | 文章标题|
+|content      |Y       |string | 文章内容|
+|brief      |N      |string | 文章简介|
+|cover_img      |N       |string | 文章封面图片|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "message": "更新成功",
+    "article_id": "5e114d4dc1e2084494859020"
 }
 ```
