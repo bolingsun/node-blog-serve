@@ -9,4 +9,7 @@ import articleController from '../controller/article.controller'
 // 添加文章
 router.post('/addArticle',auth.hasRole('admin'),articleController.addArticle);
 
+// 前台用户获取文章列表
+router.get('/article-list',articleController.getFrontArticleList);
+
 module.exports = router;

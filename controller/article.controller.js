@@ -25,12 +25,12 @@ exports.addArticle = function (req,res,next) {
 		error_msg = '内容不能为空.';
 	}
 	if(error_msg){
-		return res.status(422).send({error_msg:error_msg});
+		return res.status(422).send({status: 0,error_msg:error_msg});
 	}
 	//将图片提取存入images,缩略图调用
 	req.body.images = tools.extractImage(content);
 	return Article.createAsync(req.body).then(function (result) {
-		return res.status(200).json({success: true,article_id:result._id});
+		return res.status(200).send({status: 1,article_id:result._id, message: '新增成功'});
 	}).catch(function (err) {
 	 	return next(err);
 	});
@@ -167,28 +167,31 @@ exports.getFrontArticleCount = function (req,res,next) {
 	})
 }
 //前台获取博客列表
-exports.getFrontArticleList = function (req,res,next) {
+exports.getFrontArticleList =function (req,res,next) {
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
-	var startRow = (currentPage - 1) * itemsPerPage;
+	var pageSize = (parseInt(req.query.pageSize) > 0)?parseInt(req.query.pageSize):10;
+	var startRow = (currentPage - 1) * pageSize;
 	var sort = String(req.query.sortName) || "publish_time";
 	sort = "-" + sort;
-	var condition = {status:{$gt:0}};
+	// var condition = {status:{$gt:0}}; // 筛选状态
+	var condition = {};
 	if(req.query.tagId){
 		//tagId = new mongoose.Types.ObjectId(tagId);
 		var tagId = String(req.query.tagId);
 		condition = _.defaults(condition,{ tags: { $elemMatch: { $eq:tagId } } });		
 	}
-	Article.find(condition)
-		.select('title images visit_count comment_count like_count publish_time')
+	Article.count(condition).then((count) => {
+		Article.find(condition)
+		.select('title visit_count comment_count like_count publish_time')
 		.skip(startRow)
-		.limit(itemsPerPage)
+		.limit(pageSize)
 		.sort(sort)
 		.exec().then(function (list) {
-			return res.status(200).json({data:list});
+			return res.status(200).send({status: 1, data:list, total: count});
 		}).then(null,function (err) {
 			return next(err);
 		});
+	})
 }
 
 //前台获取文章
