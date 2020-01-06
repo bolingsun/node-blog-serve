@@ -11,7 +11,7 @@ var TagCategorySchema = new Schema({
 		type:String,
 		unique: true
 	},	//分类名称
-	desc:String		//分类描述
+	remark:String		//分类描述
 });
 
 var TagCategory = mongoose.model('TagCategory',TagCategorySchema);

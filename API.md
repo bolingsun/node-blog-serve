@@ -653,3 +653,288 @@ POST
     "message": "删除评论成功"
 }
 ```
+
+### 添加标签分类（admin）
+
+#### 请求URL:  
+```
+/tags/addTagClass
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|name      |Y       |string | 标签分类名称|
+|remark      |N       |string | 标签分类描述说明|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "catId": "5e12a158b50f522e4ccc3674",
+    "message": "新增标签分类成功"
+}
+```
+
+### 获取标签分类列表（admin）
+
+#### 请求URL:  
+```
+/tags/tagClassList
+```
+
+#### 请求方式: 
+```
+GET
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|      |       | | |
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": [
+        {
+            "_id": "5e12a158b50f522e4ccc3674",
+            "name": "体育",
+            "__v": 0
+        }
+    ]
+}
+```
+
+### 更新标签分类（admin）
+
+#### 请求URL:  
+```
+/tags/updateTagClass
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 标签分类id|
+|name      |N       |string | 标签分类名称|
+|remark      |N       |string | 标签分类描述说明|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "catId": "5e12a4404d5d8e5338365475",
+    "message": "更新标签分类成功"
+}
+```
+
+### 删除标签分类（admin）
+
+#### 请求URL:  
+```
+/tags/deleteTagClass
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 标签分类id|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "message": "删除分类成功"
+}
+```
+
+### 新增标签（admin）
+
+#### 请求URL:  
+```
+/tags/addTag
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|classId      |Y       |string | 标签分类id|
+|name      |Y       |string | 标签名称, 唯一，不能重复|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "tag_id": "5e12a5a14d5d8e5338365476",
+    "message": "新增标签成功"
+}
+```
+
+### 获取标签列表（admin）
+
+#### 请求URL:  
+```
+/tags/tagList
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|classId      |N       |string | 标签分类id,不传分类id,就说全部查询,传参,就说条件查询|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": [
+        {
+            "is_index": false,
+            "is_show": false,
+            "sort": 1,
+            "_id": "5e12a5a14d5d8e5338365476",
+            "name": "NBA",
+            "__v": 0
+        }
+    ]
+}
+```
+
+### 删除标签（admin）
+
+#### 请求URL:  
+```
+/tags/deleteTag
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 标签id|
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "message": "删除标签成功"
+}
+```
+
+
+### 更新标签（admin）
+
+#### 请求URL:  
+```
+/tags/updateTag
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 标签id|
+|name      |N       |string | 标签名称|
+|is_show      |N       |Bollean | 是否显示|
+
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "success": true,
+    "tag_id": "5e12a5a14d5d8e5338365476",
+    "message": "更新标签成功"
+}
+```
+
+### 前台获取标签列表
+
+#### 请求URL:  
+```
+/tags/frontTagList
+```
+
+#### 请求方式: 
+```
+GET
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|      |       |  |  |
+
+#### 返回示例：
+
+```javascript
+{
+    "status": 1,
+    "data": [
+        {
+            "is_index": false,
+            "is_show": true,
+            "sort": 1,
+            "_id": "5e12a5a14d5d8e5338365476",
+            "name": "NBA好",
+            "__v": 0
+        }
+    ]
+}
+```

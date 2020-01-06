@@ -16,6 +16,7 @@ import auth from '../auth'
 import upload from './upload'
 import article from './article'
 import comment from './comment'
+import tags from './tags'
 
 module.exports = (app) => {
   app.use('/user', users);
@@ -23,4 +24,5 @@ module.exports = (app) => {
   app.use('/upload', upload);
   app.use('/article', article);
   app.use('/comment', comment);
+  app.use('/tags', tags);
 }
