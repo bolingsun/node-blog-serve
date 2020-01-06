@@ -102,13 +102,13 @@ exports.updateArticle = function (req,res,next) {
 		return next(err);
 	});
 }
-//后台获取单篇博客详情(未)
+//后台获取单篇博客详情
 exports.getArticle = function (req,res) {
-	var id = req.params.id;
+	var id = req.body.id;
 	Article.findOne({_id:id})
 		.populate('tags')
 		.exec().then(function (article) {
-			return res.status(200).json({data:article});
+			return res.status(200).send({status: 1, data:article});
 		}).then(null,function (err) {
 			return res.status(500).send();
 		});

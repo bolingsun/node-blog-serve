@@ -374,6 +374,44 @@ GET
 }
 ```
 
+### 获取文章详情（前台）
+
+#### 请求URL:  
+```
+/article/adminArticleDetail
+```
+
+#### 请求方式: 
+```
+POST
+```
+
+#### 参数类型：query
+
+|参数|是否必选|类型|说明|
+|:-----|:-------:|:-----|:-----|
+|id      |Y       |number | 文章查询id|
+
+#### 返回示例：
+
+```javascript
+{
+     "status": 1,
+    "data": {
+        "_id": "5e114d4dc1e2084494859020",
+        "title": "我是测试文章2",
+        "brief": "我是简介描述a",
+        "cover_img": "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        "content" : "文章内容测试",
+        "tags":[],
+        "visit_count": 2,
+        "comment_count": 0,
+        "like_count": 1,
+        "publish_time": "2020-01-05T02:43:25.346Z"
+    }
+}
+```
+
 ### 文章喜欢与不喜欢切换（前台，需要登录）
 
 #### 请求URL:  
@@ -420,10 +458,13 @@ POST
 
 |参数|是否必选|类型|说明|
 |:-----|:-------:|:-----|:-----|
+|id      |Y       |string | 文章id|
 |title      |Y       |string | 文章标题|
 |content      |Y       |string | 文章内容|
 |brief      |N      |string | 文章简介|
 |cover_img      |N       |string | 文章封面图片|
+|tags      |N       |Array | tag标签id数组|
+
 
 #### 返回示例：
 

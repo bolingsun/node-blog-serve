@@ -12,6 +12,8 @@ router.post('/addArticle',auth.hasRole('admin'),articleController.addArticle);
 router.get('/adminArticleList',auth.hasRole('admin'),articleController.getArticleList);
 // 后台更新文章
 router.post('/updateArticle',auth.hasRole('admin'),articleController.updateArticle);
+// 后台获取文章详情
+router.post('/adminArticleDetail',auth.hasRole('admin'),articleController.getArticle);
 // 后台删除文章
 router.post('/delete',auth.hasRole('admin'),articleController.deleteArticle);
 
