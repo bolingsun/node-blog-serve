@@ -21,61 +21,61 @@ router.post("/", function(req, res) {
       });
   }
   var form = new formidable.IncomingForm();
-  let uploadDir = path.join(__dirname, "../public/uploads/");
+  // let uploadDir = path.join(__dirname, "../public/uploads/");
+  let uploadDir = path.join(__dirname, "../tmp");
   form.uploadDir = uploadDir; // 上传目录
   form.keepExtensions = true; // 保留后缀
   form.maxFileSize = 20 * 1024 * 1024; //文件大小20M
   form.type = true;
-  var url;
 
-  form.parse(req, function(err, fields, file) {
-    if (err) {
-      console.log(err)
-      return res.status(500).send({status:0, err_message: '上传错误'})
-    }
-    var extName = ""; //后缀名
-    //格式话解析file获取其中的属性值
-    let fileStr = JSON.parse(JSON.stringify(file));
-    //判断图片后缀名类型
-    switch (fileStr.file.type) {
-      case "image/pjpeg":
-        extName = "jpg";
-        break;
-      case "image/jpeg":
-        extName = "jpg";
-        break;
-      case "image/png":
-        extName = "png";
-        break;
-      case "image/x-png":
-        extName = "png";
-        break;
-    }
-    if (extName.length === 0) {
-      res.status(202).send({
-        status: 0,
-        err_message: "只支持png和jpg格式图片"
-      });
-      return;
-    }
-  });
-  form.on('file', (name, file) => {
-    // 重命名文件
-    let types = file.name.split('.')
-    let suffix = types[types.length - 1]
-    let reFileName =  new Date().getTime() + '.' + suffix
-    url = config.bashUrl + '/uploads/' + reFileName // 返回url地址
-    fs.renameSync(file.path, uploadDir + reFileName) // 在磁盘重命名文件
-  })
   // 上传进度条
   // form.on('progress', (bytesReceived, bytesExpected) => {
   //   var percent = Math.floor(bytesReceived / bytesExpected * 100)
   //   console.log(percent)
   // })
 
-  form.on('end', () => {
-    res.status(200).send({status: 1, data: url, message: '上传成功'})
-  })
+  form.parse(req, function(err, fields, file) {
+    if (err) {
+      return res.status(500).send({status:0, err_message: '上传错误'})
+    }
+    var filePath = ''
+    //如果提交文件的form中将上传文件的input名设置为tmpFile，就从tmpFile中取上传文件。否则取for in循环第一个上传的文件。
+    if(file.temFile) {
+      filePath = file.tmpFile.path;  
+    } else {
+      for(var key in file){  
+        if( file[key].path && filePath==='' ){  
+            filePath = file[key].path;  
+            break;  
+        }  
+    }  
+    }
+     //文件移动的目录文件夹，不存在时创建目标文件夹  
+     var targetDir = path.join(__dirname, '../public/uploads/');  
+     if (!fs.existsSync(targetDir)) {  
+         fs.mkdir(targetDir);  
+     }  
+    var fileExt = filePath.substring(filePath.lastIndexOf('.'));  
+       //判断文件类型是否允许上传  
+       if (('.jpg.jpeg.png.gif').indexOf(fileExt.toLowerCase()) === -1) {  
+        var err = new Error('此文件类型不允许上传');  
+        res.send({status:0, message:'此文件类型不允许上传'});  
+    } else {  
+        //以当前时间戳对上传文件进行重命名  
+        var fileName = new Date().getTime() + fileExt;  
+        var targetFile = path.join(targetDir, fileName);  
+        //移动文件  
+        fs.rename(filePath, targetFile, function (err) {  
+            if (err) {  
+                res.send({status:0, message:'操作失败'});  
+            } else {  
+                //上传成功，返回文件的相对路径  
+                var fileUrl = config.bashUrl + '/uploads/' + fileName;  
+                res.send({status:1, fileUrl:fileUrl});  
+            }  
+        });  
+    }  
+  });
 });
 
 module.exports = router;
