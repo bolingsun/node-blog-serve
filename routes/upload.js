@@ -71,12 +71,31 @@ router.post("/", function(req, res) {
             } else {  
                 //上传成功，返回文件的相对路径  
                 var fileUrl = config.bashUrl + '/uploads/' + fileName;  
-                res.send({status:1, fileUrl:fileUrl});  
+                res.send({status:1, data:fileUrl});  
             }  
         });  
     }  
   });
 });
+
+router.post('/delete', function(req, res, next) {
+  if(!req.body.name || req.body.name == ''){
+    return res.status(422).send({error_msg:"删除文件名称不能为空"});
+  }
+  var pathDir = path.join(__dirname, '../public/uploads/');
+  try {
+    fs.unlinkSync(pathDir + req.body.name)
+    res.status(200).send({
+      status: 1,
+      message: "删除文件成功"
+    })
+  } catch(err) {
+    res.status(500).send({
+      status: 0,
+      err_message: "删除文件失败"
+    })
+  }
+})
 
 module.exports = router;
 
