@@ -61,12 +61,12 @@ exports.getArticleList = function (req,res,next) {
 		});
 }
 
-//删除博客(连同这篇文章的评论一起删除.)
-exports.destroy = function (req,res,next) {
-	var id = req.params.id;
+//删除博客(连同这篇文章的评论一起删除)
+exports.deleteArticle = function (req,res,next) {
+	var id = req.body.id;
 	Article.findByIdAndRemoveAsync(id).then(function() {
-		return Comment.removeAsync({aid:id}).then(function () {
-			return res.status(200).send({success: true});
+		return Comment.removeAsync({article_id:id}).then(function () {
+			return res.status(200).send({status: 1,success: true, message: '删除成功'});
 		});
 	}).catch(function (err) {
 		return next(err);
