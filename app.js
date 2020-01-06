@@ -34,20 +34,22 @@ app.use(bodyParser.json({"limit":"10000kb"})); // 请求body设置10M大小
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// 跨域设置
-// app.all('*', function (req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type');
-//   res.header('Access-Control-Allow-Methods', '*');
-//   next();
-// });
+// 跨域设置测试
+app.all('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Methods', '*');
+  next();
+});
+// 跨域设置上线
+// app.use(cors({
+//   origin:['http://localhost:8081'],
+//   methods:['GET','POST'],  //指定接收的请求类型
+//   credentials: true,
+//   alloweHeaders:['Content-Type','Authorization']  //指定header
+// }))
+// 跨域设置上传文件
 
-app.use(cors({
-  origin:['http://localhost:8081'],
-  methods:['GET','POST'],  //指定接收的请求类型
-  credentials: true,
-  alloweHeaders:['Content-Type','Authorization']  //指定header
-}))
 
 app.use(logger('dev'));
 app.use(express.json());
