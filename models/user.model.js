@@ -89,7 +89,8 @@ UserSchema
   .virtual('userInfo')
   .get(function() {
     return {
-      'nickname': this.nickname,
+			'nickname': this.nickname,
+			'username': this.username,
       'role': this.role,
       'email': this.email,
       'avatar': this.avatar,
