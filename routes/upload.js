@@ -11,7 +11,7 @@ import uploadController from '../controller/upload.controller'
 router.post('/',auth.hasRole('admin'),uploadController.uploadPic);
 
 // 删除图片
-router.post('/',auth.hasRole('admin'),uploadController.deletePic);
+router.post('/delete',auth.hasRole('admin'),uploadController.deletePic);
 
 // function isFormData(req) {
 //   let type = req.headers["content-type"] || "";
