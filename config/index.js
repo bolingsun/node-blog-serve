@@ -7,14 +7,12 @@ var fs = require('fs');
 var all = {
   bashUrl:"http://127.0.0.1:3000",
   env: process.env.NODE_ENV,
-  port: process.env.PORT || 9000,
+  // port: process.env.PORT || 9000,
   //mongodb配置
   mongo: {
     options: {
       useNewUrlParser:true,
-      useUnifiedTopology: true,
-      user: process.env.MONGO_USERNAME || '', 
-      pass: process.env.MONGO_PASSWORD || ''
+      useUnifiedTopology: true
     }
   },
   session:{

@@ -24,6 +24,7 @@ exports.setupSignup = function (User, config) {
         newUser.email = email,
         newUser.password = newUser.encryptPassword(password);
         newUser.role = 'admin';
+        newUser.username = "Admin";
         newUser.save(function(err, result){
           if(err) {
             return done(err)
