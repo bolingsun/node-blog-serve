@@ -8,7 +8,7 @@ var formidable = require("formidable");
 import uploadController from '../controller/upload.controller'
 
 // 上传图片
-router.post('/',auth.hasRole('admin'),uploadController.uploadPic);
+router.post('/',uploadController.uploadPic);
 
 // 删除图片
 router.post('/delete',auth.hasRole('admin'),uploadController.deletePic);

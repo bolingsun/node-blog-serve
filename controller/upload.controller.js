@@ -8,6 +8,7 @@ var path = require('path');
 var config = require('../config');
 var path = require("path");
 var formidable = require("formidable");
+var fs = require('fs');
 
 
 function isFormData(req) {
@@ -73,7 +74,8 @@ exports.uploadPic = function (req,res,next) {
                 res.send({status:0, message:'操作失败'});  
             } else {  
                 //上传成功，返回文件的相对路径  
-                var fileUrl = config.bashUrl + '/uploads/' + fileName;  
+                // var fileUrl = config.bashUrl + '/uploads/' + fileName;  
+                var fileUrl = '/uploads/' + fileName; 
                 res.send({status:1, data:fileUrl});  
             }  
         });  

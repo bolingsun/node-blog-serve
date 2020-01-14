@@ -6,7 +6,7 @@
       "log_date_format"   : "YYYY-MM-DD HH:mm:ss",
       "out_file"          : "./logs/pm2-out.log",
       "error_file"        : "./logs/pm2-err.log",
-      "ignoreWatch"       : ["[\\/\\\\]\\./", "node_modules", "logs"],
+      "ignoreWatch"       : ["[\\/\\\\]\\./", "node_modules", "logs","tmp","public"],
       "watch"             : "false",
       "exec_mode"         : "fork_mode",
       "env": {
