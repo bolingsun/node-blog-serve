@@ -118,8 +118,14 @@ exports.getFrontArticleList =function (req,res,next) {
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
 	var pageSize = (parseInt(req.query.pageSize) > 0)?parseInt(req.query.pageSize):10;
 	var startRow = (currentPage - 1) * pageSize;
-	var sort = String(req.query.sortName) || "publish_time";
-	sort = "-" + sort;
+	// var sort = String(req.query.sortName) || "publish_time";
+	// sort = "-" + sort;
+	var sort
+	if(req.query.sortName) {
+		sort = String(req.query.sortName)
+	} else {
+		sort = {publish_time: -1}
+	}
 	// var condition = {status:{$gt:0}}; // 筛选状态
 	var condition = {};
 	if(req.query.tagId){
